@@ -1,0 +1,23 @@
+.next
+# Ignore build artifacts
+build
+dist    
+# Ignore dependency directories
+node_modules
+# Ignore environment variable files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+# Ignore log files
+*.log
+*.yarn.log
+*.yaml.log
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+# Ignore IDE/editor specific files
+.vscode/
+.idea/
+
