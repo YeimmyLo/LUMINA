@@ -3,7 +3,9 @@ type IconProps = {
   className?: string;
 };
 
-const ICONS: Record<string, (props: { className?: string }) => JSX.Element> = {
+const ICONS: Partial<
+  Record<string, (props: { className?: string }) => React.ReactElement>
+> = {
   arrow_forward: () => (
     <path
       d="M12 4l1.41 1.41L8.83 10H20v2H8.83l4.58 4.59L12 18l-8-8 8-6z"
