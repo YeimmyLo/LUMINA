@@ -2,10 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import type { FormPayload, FormType } from "@/lib/forms";
 
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbxzpG9wFgJizO8Nuya1awB2B-JLKEjEzXy2X8jXhE-TthsQlRpCwF4n1dTCpZI5c7xj/exec";
+  "https://script.google.com/macros/s/AKfycbwaqwR4OvfDAkRbzr1X-fufvSYbpOVVPGCf1opGlaB5KKU-KiSoJSYqoqgi2MszZw23/exec";
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const FORM_TYPES = new Set<FormType>(["lead_hero", "contact", "newsletter_products"]);
+const FORM_TYPES = new Set<FormType>([
+  "lead_hero",
+  "contact",
+  "newsletter_products",
+]);
 
 type ValidationResult =
   | { ok: true; payload: FormPayload }
@@ -17,13 +21,19 @@ export async function POST(request: NextRequest) {
   try {
     body = await request.json();
   } catch {
-    return NextResponse.json({ ok: false, message: "La solicitud no tiene un formato válido." }, { status: 400 });
+    return NextResponse.json(
+      { ok: false, message: "La solicitud no tiene un formato válido." },
+      { status: 400 },
+    );
   }
 
   const validation = validatePayload(body);
 
   if (!validation.ok) {
-    return NextResponse.json({ ok: false, message: validation.message }, { status: validation.status });
+    return NextResponse.json(
+      { ok: false, message: validation.message },
+      { status: validation.status },
+    );
   }
 
   const userAgent = request.headers.get("user-agent") || "";
@@ -32,35 +42,51 @@ export async function POST(request: NextRequest) {
   try {
     const response = await fetch(APPS_SCRIPT_URL, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"
-      },
-      body: scriptPayload
+      body: scriptPayload,
     });
 
     if (!response.ok) {
       return NextResponse.json(
-        { ok: false, message: "No se pudo conectar con Google Sheets. Inténtalo más tarde." },
-        { status: 502 }
+        {
+          ok: false,
+          message:
+            "No se pudo conectar con Google Sheets. Inténtalo más tarde.",
+        },
+        { status: 502 },
       );
     }
 
-    return NextResponse.json({ ok: true, message: "Información enviada correctamente." });
+    return NextResponse.json({
+      ok: true,
+      message: "Información enviada correctamente.",
+    });
   } catch {
     return NextResponse.json(
-      { ok: false, message: "No se pudo enviar la información. Revisa tu conexión e inténtalo de nuevo." },
-      { status: 502 }
+      {
+        ok: false,
+        message:
+          "No se pudo enviar la información. Revisa tu conexión e inténtalo de nuevo.",
+      },
+      { status: 502 },
     );
   }
 }
 
 function validatePayload(body: unknown): ValidationResult {
   if (!isRecord(body)) {
-    return { ok: false, message: "La solicitud no tiene un formato válido.", status: 400 };
+    return {
+      ok: false,
+      message: "La solicitud no tiene un formato válido.",
+      status: 400,
+    };
   }
 
   if (typeof body.company === "string" && body.company.trim()) {
-    return { ok: false, message: "No se pudo procesar la solicitud.", status: 400 };
+    return {
+      ok: false,
+      message: "No se pudo procesar la solicitud.",
+      status: 400,
+    };
   }
 
   const formType = body.formType;
@@ -77,11 +103,19 @@ function validatePayload(body: unknown): ValidationResult {
   }
 
   if (!source || !page) {
-    return { ok: false, message: "Faltan metadatos del formulario.", status: 400 };
+    return {
+      ok: false,
+      message: "Faltan metadatos del formulario.",
+      status: 400,
+    };
   }
 
   if (!email || !EMAIL_PATTERN.test(email)) {
-    return { ok: false, message: "Ingresa un correo electrónico válido.", status: 400 };
+    return {
+      ok: false,
+      message: "Ingresa un correo electrónico válido.",
+      status: 400,
+    };
   }
 
   if ((formType === "lead_hero" || formType === "contact") && !name) {
@@ -89,7 +123,11 @@ function validatePayload(body: unknown): ValidationResult {
   }
 
   if (formType === "contact" && (!subject || !message)) {
-    return { ok: false, message: "Completa el asunto y el mensaje.", status: 400 };
+    return {
+      ok: false,
+      message: "Completa el asunto y el mensaje.",
+      status: 400,
+    };
   }
 
   return {
@@ -103,8 +141,8 @@ function validatePayload(body: unknown): ValidationResult {
       subject,
       message,
       incentive,
-      company: getString(body.company)
-    }
+      company: getString(body.company),
+    },
   };
 }
 

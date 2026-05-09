@@ -1,8 +1,20 @@
+export type SkinType = "Seca" | "Grasa" | "Mixta" | "Sensible";
+export type ProductBenefit =
+  | "Hidratante"
+  | "Depurante"
+  | "Calmante"
+  | "Exfoliante"
+  | "Purificante"
+  | "Reparador"
+  | "Refrescante";
+
 export type Product = {
   name: string;
   price: string;
-  tag: string;
+  tag: ProductBenefit;
   image: string;
+  skinTypes: SkinType[];
+  benefits: ProductBenefit[];
 };
 
 export const navItems = [
@@ -14,23 +26,29 @@ export const navItems = [
 
 export const products: Product[] = [
   {
-    name: "Jabón de Lavanda y Arcilla",
+    name: "Jabon de Lavanda y Arcilla",
     price: "$18.00",
     tag: "Calmante",
+    skinTypes: ["Sensible", "Mixta"],
+    benefits: ["Calmante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuDaPAcTJquTpgDgVU0xOwTfdWR0y0OIJ6oJj2o_yXPOSsS_DWbHwSyqYbhL-n0G9PEb3_-xIA4AvaDC-_I-DJkoGuEnHmHBSB_pFwWKMWmpTr71z0h30WdRZ577KoLEd9lzwdzS4DbcTvy3HMdh5ujsmdSOjCg-JOHUy0cAZC92F0k1Bb2s_t-0I85J6ZW7AUap4jFr_D98SZupS6oCNsg2VJbb7H5HWDxNge7wOgFQJ4xCHYZqc25roIc5LcrXPByAaNXKGIpgPenj"
   },
   {
-    name: "Jabón de Caléndula",
+    name: "Jabon de Calendula",
     price: "$16.00",
     tag: "Reparador",
+    skinTypes: ["Seca", "Sensible"],
+    benefits: ["Reparador", "Calmante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCuLfRmRDUJESKgRBrymU-tMaWSUInvZeTaC_dP--JyOBFs-vQgqzJhbFZQDqtTnVOwqLlgSfG-akN41Wc4VG8p-WRnOTUtpAE7th7nqp9Kh61CC6bCDeBgo-3HBRg0nRaZMmO9O3JtKQ9GWAB4_YDp-2SBmma9O910hiRcnXoobV3Yxx2PIRRecsQtdqdf6g2o_IGGvD7bF7LBbAWrO113J5q7BQRTqGZwv7bNrfQY5gOY4SwC9rYwUjC4k0gsXM2oUPLPT5iXbmlr"
   },
   {
-    name: "Jabón Depurante de Carbón",
+    name: "Jabon Depurante de Carbon",
     price: "$19.00",
     tag: "Purificante",
+    skinTypes: ["Grasa", "Mixta"],
+    benefits: ["Depurante", "Purificante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuBfL4Qflj9RMb0fF8KBJ6VVisHY2bLCFn91xl1GAaj9yhY4E7TcRPBLBo0mU-FQfb5X3LCe0rjtwZ2JBtL4sL5HnfQBTA30Rg7fZX2ZJpGSrWjN9jhQzGYIo5L9j6FC7k0NNAnn5Rk1JdM3olt83afSfbTxxX2LGHXtnYTSXUSrDuV8NserIxim654xgIf8WeagruW8n2z96fPAxJn9gXG3pkuYTQVYe9BIHhc69-3dQAfleNgD7Se_Jr8V-dYKt_evCr7JPSnP1m1W"
   },
@@ -38,13 +56,17 @@ export const products: Product[] = [
     name: "Miel y Avena Suave",
     price: "$17.00",
     tag: "Hidratante",
+    skinTypes: ["Seca", "Sensible"],
+    benefits: ["Hidratante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuAO4FirQmoH_5JkFXvSyfJkbGJko3bkTYnDpTi_yxpJgVlxV2IFvs98P4Esoh5Y6ChMvR1hP7i53nZGsggqIF44VVBlGnBumz02AITxegay-QX6NVt-W73_2KSqeYy-gUU1Qa9_pSzFhvFHP544pd7q1RCMmiq7axXxNsA6O-jeVTE7P0xAmOgB1ZPrT4b5s13T-HjmJPMFGFRAeSoNYTYwVRwuoMPCtzL4ENOirXNK5Jc7fn6Q00RFynw5DlYVnjAyO4ewmcjB72Bn"
   },
   {
-    name: "Eucalipto y Árbol de Té",
+    name: "Eucalipto y Arbol de Te",
     price: "$18.00",
     tag: "Refrescante",
+    skinTypes: ["Grasa", "Mixta"],
+    benefits: ["Refrescante", "Depurante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCKvN7RQ1M1G9kAU3Gyz_b80Iiit6_rlMdUA5IMmPfG-691hmj5Er83so3VfZhmxjHFVgoRKf-6eWS4HewuJ_DXYpvEriVBQiBR9GAP7dn_rjA15uEzw9oNynGJKN1KerYkdroNHEoAPWGicG5mAvmsJTNk4OYmkw7PxKbYfJcv_N2iaJTRAefUs2TJtYD8A3I4HUOr9QFN1njC7t4RUDMA0sMBYMOsDtaMDw9GJVt0BxrB0NeQwaN-26c1-1aivbdLbAN-uwkqd-Vf"
   },
@@ -52,6 +74,8 @@ export const products: Product[] = [
     name: "Rosas y Arcilla Rosa",
     price: "$20.00",
     tag: "Exfoliante",
+    skinTypes: ["Mixta", "Sensible"],
+    benefits: ["Exfoliante", "Calmante"],
     image:
       "https://lh3.googleusercontent.com/aida-public/AB6AXuCh_BTsEeLJ_Oe0aCsLyw0yisxFOb9sRDzSsjkmgQkgOIeHd6vRSvMTRZk26vj-HjwoTY_OoA7iBvxzTkTfFHvz2jDje9pAtP8arH1El2pvhahYs513-pciTCQsS2ukFg-o71IXED9K9eIUQ3yF35kR9pD-4vs6JQP05OaPoFQkpdel1DPJQBJSTDEZmeJPds8N_DAihMI8PCxf3XFrkc0ZHrFtnx-FjPFBcJTlZhu0DFjFVfe4QETJ6AzZVY09lohJY5VtMBsnXUlk"
   }

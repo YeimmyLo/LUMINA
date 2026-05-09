@@ -1,13 +1,58 @@
+"use client";
+
+import { useMemo, useState } from "react";
 import { Icon } from "@/components/Icon";
 import { NewsletterForm } from "@/components/NewsletterForm";
 import { PageShell } from "@/components/PageShell";
 import { ProductCard } from "@/components/ProductCard";
-import { imageSet, products } from "@/data/site";
+import { imageSet, products, type ProductBenefit, type SkinType } from "@/data/site";
 
-const filters = ["Seca", "Grasa", "Mixta", "Sensible"];
-const tags = ["Hidratante", "Depurante", "Calmante", "Exfoliante"];
+const skinTypeFilters: SkinType[] = ["Seca", "Grasa", "Mixta", "Sensible"];
+const benefitFilters: ProductBenefit[] = [
+  "Hidratante",
+  "Depurante",
+  "Calmante",
+  "Exfoliante",
+  "Purificante",
+  "Reparador",
+  "Refrescante"
+];
 
 export default function ProductsPage() {
+  const [selectedSkinTypes, setSelectedSkinTypes] = useState<SkinType[]>([]);
+  const [selectedBenefits, setSelectedBenefits] = useState<ProductBenefit[]>([]);
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((product) => {
+      const skinTypeMatch =
+        selectedSkinTypes.length === 0 || selectedSkinTypes.some((skinType) => product.skinTypes.includes(skinType));
+
+      const benefitMatch =
+        selectedBenefits.length === 0 || selectedBenefits.some((benefit) => product.benefits.includes(benefit));
+
+      return skinTypeMatch && benefitMatch;
+    });
+  }, [selectedBenefits, selectedSkinTypes]);
+
+  const hasActiveFilters = selectedSkinTypes.length > 0 || selectedBenefits.length > 0;
+
+  function toggleSkinType(filter: SkinType) {
+    setSelectedSkinTypes((current) =>
+      current.includes(filter) ? current.filter((item) => item !== filter) : [...current, filter]
+    );
+  }
+
+  function toggleBenefit(filter: ProductBenefit) {
+    setSelectedBenefits((current) =>
+      current.includes(filter) ? current.filter((item) => item !== filter) : [...current, filter]
+    );
+  }
+
+  function clearFilters() {
+    setSelectedSkinTypes([]);
+    setSelectedBenefits([]);
+  }
+
   return (
     <PageShell active="/products" grain>
       <section className="relative overflow-hidden bg-gradient-to-b from-[#FFFDF5] to-[#F5F2ED] px-8 py-20 md:px-12">
@@ -30,47 +75,88 @@ export default function ProductsPage() {
           <div>
             <h2 className="mb-6 font-display text-h3 text-primary">Tipo de piel</h2>
             <div className="space-y-3">
-              {filters.map((filter) => (
-                <label key={filter} className="flex cursor-pointer items-center text-on-surface-variant transition hover:text-primary">
-                  <input type="checkbox" className="h-5 w-5 rounded-sm border-outline-variant text-primary focus:ring-primary" />
-                  <span className="ml-3">{filter}</span>
-                </label>
-              ))}
+              {skinTypeFilters.map((filter) => {
+                const isActive = selectedSkinTypes.includes(filter);
+
+                return (
+                  <label key={filter} className="flex cursor-pointer items-center text-on-surface-variant transition hover:text-primary">
+                    <input
+                      checked={isActive}
+                      className="h-5 w-5 rounded-sm border-outline-variant text-primary focus:ring-primary"
+                      onChange={() => toggleSkinType(filter)}
+                      type="checkbox"
+                    />
+                    <span className={`ml-3 transition-colors ${isActive ? "font-medium text-primary" : ""}`}>{filter}</span>
+                  </label>
+                );
+              })}
             </div>
           </div>
+
           <div>
             <h2 className="mb-6 font-display text-h3 text-primary">Beneficios</h2>
             <div className="flex flex-wrap gap-2">
-              {tags.map((tag) => (
-                <button
-                  key={tag}
-                  className="label-caps rounded-full border border-outline-variant bg-surface-container-low px-4 py-2 transition hover:border-primary-container hover:bg-primary-container hover:text-white"
-                >
-                  {tag}
-                </button>
-              ))}
+              {benefitFilters.map((tag) => {
+                const isActive = selectedBenefits.includes(tag);
+
+                return (
+                  <button
+                    key={tag}
+                    className={`label-caps rounded-full border px-4 py-2 transition ${
+                      isActive
+                        ? "border-primary-container bg-primary-container text-white"
+                        : "border-outline-variant bg-surface-container-low hover:border-primary-container hover:bg-primary-container hover:text-white"
+                    }`}
+                    onClick={() => toggleBenefit(tag)}
+                    type="button"
+                  >
+                    {tag}
+                  </button>
+                );
+              })}
             </div>
           </div>
         </aside>
 
         <div>
           <div className="mb-10 flex flex-col justify-between gap-6 md:flex-row md:items-center">
-            <p className="italic text-on-surface-variant">Mostrando 6 productos artesanales</p>
-            <label className="flex items-center gap-4">
-              <span className="label-caps text-outline">Ordenar por</span>
-              <select className="rounded-lg border border-outline-variant bg-surface-container-low px-5 py-2 focus:border-primary focus:ring-primary">
-                <option>Destacados</option>
-                <option>Precio: menor a mayor</option>
-                <option>Precio: mayor a menor</option>
-                <option>Novedades</option>
-              </select>
-            </label>
+            <div className="space-y-2">
+              <p className="italic text-on-surface-variant">
+                Mostrando {filteredProducts.length} producto{filteredProducts.length === 1 ? "" : "s"} artesanales
+              </p>
+              {hasActiveFilters ? (
+                <button
+                  className="label-caps inline-flex rounded-full border border-outline-variant px-4 py-2 text-primary transition hover:border-primary hover:bg-surface-container-low"
+                  onClick={clearFilters}
+                  type="button"
+                >
+                  Limpiar filtros
+                </button>
+              ) : null}
+            </div>
           </div>
-          <div className="grid grid-cols-1 gap-x-gutter gap-y-12 md:grid-cols-2 xl:grid-cols-3">
-            {products.map((product) => (
-              <ProductCard key={product.name} product={product} />
-            ))}
-          </div>
+
+          {filteredProducts.length > 0 ? (
+            <div className="grid grid-cols-1 gap-x-gutter gap-y-12 md:grid-cols-2 xl:grid-cols-3">
+              {filteredProducts.map((product) => (
+                <ProductCard key={product.name} product={product} />
+              ))}
+            </div>
+          ) : (
+            <div className="rounded-xl border border-outline-variant/40 bg-surface-container-low px-8 py-16 text-center">
+              <h3 className="font-display text-2xl text-primary">No encontramos coincidencias</h3>
+              <p className="mx-auto mt-3 max-w-md text-on-surface-variant">
+                Prueba otra combinación de tipo de piel y beneficios para descubrir más opciones.
+              </p>
+              <button
+                className="label-caps mt-6 rounded-full bg-primary-container px-6 py-3 text-white transition hover:bg-primary"
+                onClick={clearFilters}
+                type="button"
+              >
+                Ver todos los productos
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

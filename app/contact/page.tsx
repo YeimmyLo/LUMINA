@@ -2,6 +2,8 @@ import { ContactForm } from "@/components/ContactForm";
 import { Icon } from "@/components/Icon";
 import { PageShell } from "@/components/PageShell";
 import { imageSet } from "@/data/site";
+import { Map, MapControls } from "@/components/ui/map";
+import { Card } from "@/components/ui/card";
 
 export default function ContactPage() {
   return (
@@ -64,12 +66,12 @@ export default function ContactPage() {
         </div>
       </section>
 
-      <section className="mb-section-padding h-96 w-full opacity-80 grayscale">
-        <img
-          src={imageSet.map}
-          alt="Mapa estilizado de Barcelona"
-          className="h-full w-full object-cover"
-        />
+      <section className="mb-section-padding h-96 w-full ">
+        <Card className="h-[320px] p-0 overflow-hidden">
+          <Map center={[-74.08175, 4.60971]} zoom={14}>
+            <MapControls />
+          </Map>
+        </Card>
       </section>
     </PageShell>
   );

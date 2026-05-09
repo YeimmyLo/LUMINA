@@ -25,16 +25,10 @@ export const initialFormState: FormState = {
 export async function submitForm(
   payload: FormPayload,
 ): Promise<{ message: string }> {
-  const response = await fetch(
-    "https://script.google.com/macros/s/AKfycbw6ob4npKXfoBBUcUbIxWcm52G8dE4DUHa_a2Q0ZVdxm1IdjHszEJdip4F27jtFCEs/exec",
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    },
-  );
+  const response = await fetch("/api/forms", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  });
 
   const data = (await response.json().catch(() => null)) as {
     message?: string;

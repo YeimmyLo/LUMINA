@@ -25,7 +25,7 @@ export function ContactForm() {
         email: String(formData.get("email") || ""),
         subject: String(formData.get("subject") || ""),
         message: String(formData.get("message") || ""),
-        company: String(formData.get("company") || "")
+        company: String(formData.get("company") || ""),
       });
 
       form.reset();
@@ -33,7 +33,10 @@ export function ContactForm() {
     } catch (error) {
       setState({
         status: "error",
-        message: error instanceof Error ? error.message : "No pudimos enviar el mensaje."
+        message:
+          error instanceof Error
+            ? error.message
+            : "No pudimos enviar el mensaje.",
       });
     }
   }
@@ -64,16 +67,13 @@ export function ContactForm() {
 
       <label className="block space-y-2">
         <span className="label-caps text-primary">Asunto</span>
-        <select
+        <input
           className="w-full rounded-xl border border-outline-variant bg-surface px-4 py-3 outline-none focus:border-secondary"
           name="subject"
+          placeholder="¿Sobre qué te gustaría hablar?"
           required
-        >
-          <option>Consulta sobre productos</option>
-          <option>Asociaciones mayoristas</option>
-          <option>Prensa y medios</option>
-          <option>Otro</option>
-        </select>
+          type="text"
+        />
       </label>
 
       <label className="block space-y-2">
@@ -104,7 +104,11 @@ export function ContactForm() {
       {state.message ? (
         <p
           className={`text-sm ${
-            state.status === "success" ? "text-primary-container" : state.status === "error" ? "text-red-700" : "text-stone-500"
+            state.status === "success"
+              ? "text-primary-container"
+              : state.status === "error"
+                ? "text-red-700"
+                : "text-stone-500"
           }`}
           role="status"
         >
